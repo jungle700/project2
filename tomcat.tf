@@ -83,7 +83,7 @@ resource "aws_instance" "web3" {
 
   instance_type = "t2.micro"
 
-  ami = "ami-0ea3405d2d2522162"
+  ami = var.amis[var.aws_region]
  
   key_name = "tkay"
 
@@ -94,6 +94,12 @@ resource "aws_instance" "web3" {
   subnet_id = "${aws_subnet.default3.id}" 
 
   user_data = data.template_file.myuserdata3.template
+
+  tags = {
+
+    Name = "Tomcat_Server"
+
+  }
 
 }
 

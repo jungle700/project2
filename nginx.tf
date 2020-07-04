@@ -67,21 +67,18 @@ resource "aws_security_group" "ngi-group" {
 }
 
 
+data "template_file" "myuserdata" {
 
-#resource "aws_key_pair" "tkay1" {
+  template = file("${path.cwd}/temp_ngi.tpl")
 
-#  key_name = "tkay"
-
-#  public_key = file(var.path_to_public_key)
-
-#}
+  }
 
 
 resource "aws_instance" "web" {
 
   instance_type = "t2.micro"
 
-  ami = "ami-0ea3405d2d2522162"
+  ami = var.amis[var.aws_region]
  
   key_name = "tkay"
 
@@ -90,6 +87,14 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = ["${aws_security_group.ngi-group.id}"]
 
   subnet_id = "${aws_subnet.default.id}" 
+
+  user_data = data.template_file.myuserdata.template
+
+  tags = {
+
+    Name = "Nginx_Server"
+
+  }
 
 }
 
@@ -100,38 +105,3 @@ resource "aws_eip" "main" {
     vpc = true
 }
 
-resource "null_resource" "connect_ssh" {
-
-    connection {
-
-    # The default username for our AMI
-
-    user = "ec2-user"
-
-    host = aws_eip.main.public_ip
-
-    private_key = file(var.path_to_private_key)
-
-    # The connection will use the local SSH agent for authentication.
-
-  }
-
-   provisioner "file" {
-    source      = "${path.cwd}/temp_ng.tpl"
-    destination = "sudo /etc/yum.repos.d/nginx.repo"
-  }
-
-  provisioner "remote-exec" {
-
-    inline = [
-
-      "sudo yum update -y",
-
-      "sudo yum install nginx -y",
-
-      "sudo service nginx start",
-    ]
-
-  }
-  depends_on = ["aws_eip.main"]
-}

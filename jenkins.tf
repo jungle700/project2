@@ -123,7 +123,7 @@ resource "aws_instance" "web2" {
 
   instance_type = "t2.micro"
 
-  ami = "ami-0ea3405d2d2522162"
+  ami = var.amis[var.aws_region]
  
   key_name = "tkay"
 
@@ -134,6 +134,12 @@ resource "aws_instance" "web2" {
   subnet_id = "${aws_subnet.default2.id}" 
 
   user_data = data.template_file.myuserdata2.template
+
+  tags = {
+
+    Name = "Jenkins_Server"
+
+  }
 
 }
 

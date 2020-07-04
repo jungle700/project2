@@ -3,6 +3,10 @@
 
  yum update -y
 
- yum install tomcat –y
+ yum install java-1.8.0-openjdk -y 
 
- service tomcat start
+ yum -y install tomcat
+
+ systemctl enable tomcat
+
+ systemctl start tomcat
