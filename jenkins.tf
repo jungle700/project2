@@ -116,6 +116,7 @@ public_key = file(var.path_to_public_key)
 data "template_file" "myuserdata2" {
 
   template = file("${path.cwd}/temp_jen.tpl")
+  
 
   }
 
@@ -153,5 +154,11 @@ resource "aws_eip" "main2" {
    }
 
 
-
+terraform {
+  backend "s3" {
+    bucket = "my-tf-dev001"
+    key    = "dev/terraform.tfstate"
+    region = "eu-west-1"
+  }
+}
 
