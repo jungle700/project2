@@ -7,6 +7,4 @@
 
  yum -y install tomcat
 
- systemctl enable tomcat
-
  systemctl start tomcat
